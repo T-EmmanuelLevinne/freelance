@@ -1,59 +1,62 @@
-// Sample property data
-const defaultProperties = [
-  {
-    id: 1,
-    title: "Beachfront Paradise",
-    price: 950000,
-    location: "Samal",
-    type: "beach",
-    images: [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80"
-    ],
-    description: "A beautiful beachfront property with stunning views and direct access to the sea."
-  },
-  {
-    id: 2,
-    title: "Luxury Resort Living",
-    price: 1200000,
-    location: "Cebu",
-    type: "resort",
-    images: [
-      "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80"
-    ],
-    description: "Experience luxury living in this modern resort with all amenities included."
-  },
-  {
-    id: 3,
-    title: "Spacious Farm Land",
-    price: 350000,
-    location: "Davao",
-    type: "farm",
-    images: [
-      "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80"
-    ],
-    description: "Ideal for agriculture or a peaceful retreat, this farm land offers endless possibilities."
-  },
-  // Add more properties as needed
-];
+// --- API URL LOGIC FOR RENDER/GITHUB PAGES/LOCAL ---
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isGithubPages = window.location.hostname.endsWith('.github.io');
+// CHANGE THIS to your actual Render backend URL after deployment:
+const RENDER_API_URL = 'https://freelancer-dfbx.onrender.com';
+const API_BASE_URL = isLocalhost
+    ? 'http://localhost:50118'
+    : (isGithubPages ? RENDER_API_URL : window.location.origin);
 
-// Load properties from localStorage if available
 let properties = [];
-try {
-  const saved = localStorage.getItem('properties');
-  if (saved) {
-    properties = JSON.parse(saved);
-  } else {
-    properties = defaultProperties.slice();
+
+// Fetch properties from backend
+async function fetchProperties() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/properties`);
+    properties = await res.json();
+    applyFilters();
+  } catch (e) {
+    properties = [];
+    applyFilters();
   }
-} catch (e) {
-  properties = defaultProperties.slice();
 }
 
-// Helper to save properties to localStorage
-function saveProperties() {
-  localStorage.setItem('properties', JSON.stringify(properties));
+// Add property via backend
+async function addPropertyBackend(data) {
+  const res = await fetch(`${API_BASE_URL}/api/properties`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if (res.ok) {
+    await fetchProperties();
+  }
 }
+
+// Edit property via backend
+async function editPropertyBackend(id, data) {
+  const res = await fetch(`${API_BASE_URL}/api/properties/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if (res.ok) {
+    await fetchProperties();
+  }
+}
+
+// Delete property via backend
+async function deletePropertyBackend(id) {
+  const res = await fetch(`${API_BASE_URL}/api/properties/${id}`, {
+    method: 'DELETE'
+  });
+  if (res.ok) {
+    await fetchProperties();
+  }
+}
+
+// Call fetchProperties on page load
+document.addEventListener('DOMContentLoaded', fetchProperties);
 
 const PAGE_SIZE = 6;
 let filtered = properties;
@@ -114,12 +117,7 @@ function renderGrid() {
       btn.onclick = function() {
         const id = parseInt(this.getAttribute('data-id'), 10);
         if (confirm('Are you sure you want to delete this property?')) {
-          const idx = properties.findIndex(p => p.id === id);
-          if (idx !== -1) {
-            properties.splice(idx, 1);
-            saveProperties();
-            applyFilters();
-          }
+          deletePropertyBackend(id);
         }
       };
     });
@@ -151,7 +149,6 @@ function applyFilters() {
   const type = document.getElementById('filterType').value;
   const location = document.getElementById('filterLocation').value;
   const search = document.getElementById('searchInput').value.trim().toLowerCase();
-  const maxPrice = parseInt(document.getElementById('maxPrice').value, 10);
 
   filtered = properties.filter(p => {
     let match = true;
@@ -160,9 +157,9 @@ function applyFilters() {
     if (search && !(
       p.title.toLowerCase().includes(search) ||
       (p.location && p.location.toLowerCase().includes(search)) ||
-      (p.description && p.description.toLowerCase().includes(search))
+      (p.description && p.description.toLowerCase().includes(search)) ||
+      (p.price && p.price.toLowerCase().includes(search))
     )) match = false;
-    if (maxPrice && p.price > maxPrice) match = false;
     return match;
   });
   currentPage = 1;
@@ -236,7 +233,6 @@ document.getElementById('filterForm').onsubmit = function(e) {
 document.getElementById('searchInput').addEventListener('input', applyFilters);
 document.getElementById('filterType').addEventListener('change', applyFilters);
 document.getElementById('filterLocation').addEventListener('change', applyFilters);
-document.getElementById('maxPrice').addEventListener('input', applyFilters);
 
 // Initial render
 applyFilters(); 
@@ -372,7 +368,7 @@ if (localStorage.getItem('isLoggedIn') === 'true') {
       const title = document.getElementById('addTitle').value.trim();
       const type = document.getElementById('addType').value;
       const location = document.getElementById('addLocation').value;
-      const price = parseInt(document.getElementById('addPrice').value, 10);
+      const price = document.getElementById('addPrice').value.trim();
       const description = document.getElementById('addDescription').value.trim();
       // Use addImagesArray for images
       if (!title || !type || !location || !price || !description || !addImagesArray.length) return;
@@ -387,9 +383,7 @@ if (localStorage.getItem('isLoggedIn') === 'true') {
         description,
         images
       };
-      properties.unshift(newProperty);
-      saveProperties();
-      applyFilters();
+      addPropertyBackend(newProperty);
       document.getElementById('addPropertyModal').style.display = 'none';
       addPropertyForm.reset();
       addImagesArray = [];
@@ -463,7 +457,7 @@ if (editPropertyForm) {
     const title = document.getElementById('editTitle').value.trim();
     const type = document.getElementById('editType').value;
     const location = document.getElementById('editLocation').value;
-    const price = parseInt(document.getElementById('editPrice').value, 10);
+    const price = document.getElementById('editPrice').value.trim();
     const description = document.getElementById('editDescription').value.trim();
     const imageFiles = document.getElementById('editImages').files;
     let prop = properties.find(p => p.id === id);
@@ -490,8 +484,7 @@ if (editPropertyForm) {
         prop.location = location;
         prop.price = price;
         prop.description = description;
-        saveProperties();
-        applyFilters();
+        editPropertyBackend(id, prop);
         document.getElementById('editPropertyModal').style.display = 'none';
         editPropertyForm.reset();
       }
@@ -505,8 +498,7 @@ if (editPropertyForm) {
       if (window._editImagesArray) {
         prop.images = window._editImagesArray.slice();
       }
-      saveProperties();
-      applyFilters();
+      editPropertyBackend(id, prop);
       document.getElementById('editPropertyModal').style.display = 'none';
       editPropertyForm.reset();
     }
