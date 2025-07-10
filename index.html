@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelancer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+  <!-- Header -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><span class="real-estate">Freelancer</span> Elmer Tecson</a>
+  
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="properties.html" class="nav-link">Properties</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="admin-login.html" class="nav-link">Admin</a></li>
+        <li id="logoutNavItem" style="display:none;"><a href="#" id="logoutNavLink" class="nav-link">Logout</a></li>
+      </ul>
+  
+      <div class="hamburger" id="hamburger">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+    </div>
+  </nav>
+   <br>
+    <br>
+     <br>
+  <!-- Home Section -->
+  <section class="home-section">
+    <div class="home-content">
+      <div class="home-left">
+        <div class="home-location">Philippines</div>
+        <h1 class="home-title">Find Your Property</h1>
+        <p class="home-subtext">Discover beachlines, farms, beach resort lots, and overlooking lots, trusted by a lot of buyers and sellers.</p>
+          <button class="find-properties-btn" onclick="window.location.href='properties.html'">Discover</button>
+      </div>
+      <div class="home-right" style="position: relative;">
+        <div class="phone-slider-stack" style="position: relative; width: 700px; height: 350px; max-width: 95vw; max-height: 60vw;">
+          <div class="slider">
+            <div class="slider-image active">
+              <img src="images/beach.jpg" alt="beach">
+              <div class="slider-caption"><span class="caption-text">4.5 has beachline frontage 100meters along cemented road price quires intrested buyer at samal</span></div>
+            </div>
+            <div class="slider-image">
+              <img src="images/beachresort.jpg" alt="resort">
+              <div class="slider-caption"><span class="caption-text">264sqm over looking with access beach resort near bridge at samal quires</span></div>
+            </div>
+            <div class="slider-image">
+              <img src="images/lot.jpg" alt="lot">
+              <div class="slider-caption"><span class="caption-text">300sqm along cemented road at samal price 1.4m</span>
+              </div>
+            </div>
+            <div class="slider-image">
+              <img src="images/farmlot.png" alt="farm">
+              <div class="slider-caption"><span class="caption-text">11 has farm lot along cemented road price 3m per has quires intrested buyer</div>
+            </div>
+          </div>
+          <div class="iphone-png-frame"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+ <br>
+ <br>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="home-location">Contacts</div>
+    <div style="display:flex;justify-content:center;align-items:center;gap:1.5rem;padding:1.2rem 0;">
+      <a href="https://www.facebook.com/elmer.tecson.105010" target="_blank" rel="noopener" style="color:#2563eb;"><i class="fa-brands fa-facebook" style="font-size:2rem;"></i></a>
+      <img src="images/globe-telecom.png" alt="Globe" style="height:32px;width:80px;vertical-align:middle;" />
+      <img src="images/smart-tele.svg" alt="Smart" style="height:32px;width:80px;vertical-align:middle;" />
+    </div>
+  </footer>
+  <script src="javascript/slider.js"></script>
+  
+  <div id="theaterOverlay" style="display:none; position:fixed; z-index:9999; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); align-items:center; justify-content:center;">
+    <span id="theaterClose" style="position:absolute;top:24px;right:36px;font-size:2.5rem;color:#fff;cursor:pointer;z-index:10001;">&times;</span>
+    <img id="theaterImage" src="" alt="Fullscreen" style="max-width:90vw; max-height:80vh; border-radius:1.2rem; box-shadow:0 8px 32px rgba(0,0,0,0.25);">
+  </div>
+</body>
+</html>

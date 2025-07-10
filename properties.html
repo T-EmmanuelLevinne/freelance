@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Listings</title>
+  <link rel="stylesheet" href="css/listing.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="images/favicon.png">
+</head>
+<body>
+  
+  <!-- Header -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="properties.html" class="nav-logo"><span class="real-estate">Freelancer</span> Elmer Tecson</a>
+  
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="properties.html" class="nav-link">Properties</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="admin-login.html" class="nav-link">Admin</a></li>
+        <li id="managePropertyNavItem" style="display:none;"><a href="#" id="managePropertyNavLink" class="nav-link">Manage Property</a></li>
+        <li id="logoutNavItem" style="display:none;"><a href="#" id="logoutNavLink" class="nav-link">Logout</a></li>
+      </ul>
+  
+      <div class="hamburger" id="hamburger">
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+        <div class="hamburger-line"></div>
+      </div>
+    </div>
+  </nav>
+  <br>
+  <br>
+ <br>
+  <!-- Search & Filter Bar -->
+  <section class="listing-filters">
+    <form id="filterForm" class="filter-form">
+      <div class="filter-group">
+        <label for="searchInput">Search Properties</label>
+        <input type="text" id="searchInput" name="search" placeholder="Search by Property or Location">
+      </div>
+      <div class="filter-group">
+        <label for="filterType">Property Type</label>
+        <select name="type" id="filterType">
+          <option value="">All Types</option>
+          <option value="beach">Beach</option>
+          <option value="resort">Resort</option>
+          <option value="lot">Lot</option>
+          <option value="farm">Farm</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filterLocation">Location</label>
+        <select name="location" id="filterLocation">
+          <option value="">All Locations</option>
+          <option value="samal">Samal</option>
+          <option value="davao">Davao</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="maxPrice">Price (Adjustable)</label>
+        <input type="range" id="maxPrice" name="maxPrice" min="500000" max="500000000" step="10000" value="500000" oninput="document.getElementById('maxPriceLabel').textContent = 'Up to ₱' + Number(this.value).toLocaleString()">
+        <span id="maxPriceLabel">Up to ₱500,000</span>
+      </div>
+    </form>
+  </section>
+
+  <!-- Listings Grid -->
+  <section class="listing-grid" id="listingGrid">
+    <!-- Property cards will be rendered here by JS -->
+  </section>
+
+  <!-- Add Property Button (admin only) -->
+  <button id="addPropertyBtn" style="display:none;margin:2rem auto 0 auto;background:#2563eb;color:#fff;padding:0.8rem 2.2rem;font-size:1.1rem;border:none;border-radius:0.7rem;box-shadow:0 2px 8px rgba(37,99,235,0.08);cursor:pointer;">Add Property</button>
+
+  <!-- Add Property Modal -->
+  <div id="addPropertyModal" style="display:none;position:fixed;z-index:10020;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:2rem 1.5rem;border-radius:1.2rem;max-width:400px;width:95vw;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;">
+      <button id="closeAddPropertyModal" style="position:absolute;top:12px;right:18px;font-size:2rem;color:#888;background:none;border:none;cursor:pointer;">&times;</button>
+      <h2 style="margin-bottom:1.2rem;color:#2563eb;font-size:1.3rem;text-align:center;">Add New Property</h2>
+      <form id="addPropertyForm" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:1rem;">
+        <input type="text" id="addTitle" placeholder="Title" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+        <select id="addType" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+          <option value="">Select Type</option>
+          <option value="beach">Beach</option>
+          <option value="resort">Resort</option>
+          <option value="lot">Lot</option>
+          <option value="farm">Farm</option>
+        </select>
+        <select id="addLocation" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+          <option value="">Select Location</option>
+          <option value="samal">Samal</option>
+          <option value="davao">Davao</option>
+        </select>
+        <input type="number" id="addPrice" placeholder="Price (₱)" min="0" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+        <textarea id="addDescription" placeholder="Description" rows="3" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;resize:none;"></textarea>
+        <input type="file" id="addImages" accept="image/*" multiple required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+        <div id="addImagePreview" style="display:flex;gap:0.5rem;flex-wrap:wrap;"></div>
+        <button type="submit" style="background:#2563eb;color:#fff;padding:0.8rem 0;font-size:1.08rem;border:none;border-radius:0.7rem;cursor:pointer;">Add Property</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Property Modal (admin only) -->
+  <div id="editPropertyModal" style="display:none;position:fixed;z-index:10020;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:2rem 1.5rem;border-radius:1.2rem;max-width:400px;width:95vw;box-shadow:0 8px 32px rgba(0,0,0,0.18);position:relative;">
+      <button id="closeEditPropertyModal" style="position:absolute;top:12px;right:18px;font-size:2rem;color:#888;background:none;border:none;cursor:pointer;">&times;</button>
+      <h2 style="margin-bottom:1.2rem;color:#2563eb;font-size:1.3rem;text-align:center;">Edit Property</h2>
+      <form id="editPropertyForm" enctype="multipart/form-data" style="display:flex;flex-direction:column;gap:1rem;">
+        <input type="hidden" id="editId">
+        <input type="text" id="editTitle" placeholder="Title" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+        <select id="editType" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+          <option value="">Select Type</option>
+          <option value="beach">Beach</option>
+          <option value="resort">Resort</option>
+          <option value="lot">Lot</option>
+          <option value="farm">Farm</option>
+        </select>
+        <select id="editLocation" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+          <option value="">Select Location</option>
+          <option value="samal">Samal</option>
+          <option value="davao">Davao</option>
+          <option value="cebu">Cebu</option>
+          <option value="palawan">Palawan</option>
+        </select>
+        <input type="number" id="editPrice" placeholder="Price (₱)" min="0" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+        <textarea id="editDescription" placeholder="Description" rows="3" required style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;resize:none;"></textarea>
+        <input type="file" id="editImages" accept="image/*" multiple style="padding:0.7rem 1rem;border-radius:0.6rem;border:1px solid #d1d5db;">
+        <div id="editImagePreview" style="display:flex;gap:0.5rem;flex-wrap:wrap;"></div>
+        <button type="submit" style="background:#2563eb;color:#fff;padding:0.8rem 0;font-size:1.08rem;border:none;border-radius:0.7rem;cursor:pointer;">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav class="pagination" id="pagination">
+    <!-- Pagination buttons will be rendered here by JS -->
+  </nav>
+
+  <!-- Fullscreen Modal for Property Details -->
+  <div class="modal" id="propertyModal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-gallery" id="modalGallery">
+        <!-- Gallery images will be rendered here by JS -->
+      </div>
+      <div class="modal-info">
+        <h2 id="modalTitle"></h2>
+        <p id="modalLocation"></p>
+        <p id="modalType"></p>
+        <p id="modalPrice"></p>
+        <div id="modalDescription"></div>
+        <a class="modal-contact" href="https://www.facebook.com/elmer.tecson.105010" target="_blank" rel="noopener" style="display:inline-block;text-align:center;">Send message</a>
+        <p style="font-size:0.95rem;color:#888;margin-top:0.7rem;text-align:center;">Interested in this property? Screenshot it and send it to me on Messenger for more info!</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="theaterOverlay" style="display:none; position:fixed; z-index:9999; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); align-items:center; justify-content:center;">
+    <span id="theaterClose" style="position:absolute;top:24px;right:36px;font-size:3.5rem;color:#fff;cursor:pointer;z-index:10001;">&times;</span>
+    <img id="theaterImage" src="" alt="Fullscreen" style="max-width:90vw; max-height:80vh; border-radius:1.2rem; box-shadow:0 8px 32px rgba(0,0,0,0.25);">
+  </div>
+
+  <button id="scrollToTopBtn" style="display:none;position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:10010;background:#2563eb;color:#fff;border:none;border-radius:50%;width:54px;height:54px;box-shadow:0 4px 16px rgba(37,99,235,0.18);cursor:pointer;align-items:center;justify-content:center;transition:opacity 0.2s;">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:auto;">
+      <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <script src="javascript/listing.js"></script>
+  
+  
+</body>
+</html>
